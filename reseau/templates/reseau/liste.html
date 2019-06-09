@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Liste des Profils</h3>
+
+{% for user in liste_user %}
+       <a href="{% url 'detail'  user.id %}" class="list-group-item">{{ user.username}}</a>
+{% endfor %}
+{% endblock %}

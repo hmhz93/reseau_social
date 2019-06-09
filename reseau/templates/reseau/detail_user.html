@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+{% load humanize %}
+
+<h1>{{ utilisateur.username }}</h1>
+
+<div id = "center">
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
+    <form method="post" action="">
+        {% csrf_token %}
+        <div id="statut_form">
+            <p>
+                <label for="id_commentaire">Poster un Message</label>
+                <input type="text" name="texte" id="id_commentaire" />
+            </p>
+
+            <div>
+                <input type='hidden' name="commentaire_parent" value="0" />
+                <input class="btn btn-primary" type="submit" value="Envoyer" />
+            </div>
+        </div>
+    </form>
+
+    {% for statut_message in statut_messages %}
+    <div id="contenu">
+        <div class="statut_1">
+            <div class="statut">
+                    <div class = "information">
+                        {% if statut_message.createur.id ==  statut_message.profil_cible.id  %}
+                            </br> <div style="font-weight: bold">{{ statut_message.createur.username }} </div>
+                            </br> <div style="font-style: italic"> {{ statut_message.date|naturaltime }} </div>
+                        {% else %}
+                            </br> <div style="font-weight: bold">{{ statut_message.createur.username }} >> {{ statut_message.profil_cible.username }} </div>
+                            </br> <div style="font-style: italic">{{ statut_message.date|naturaltime }} </div>
+                        {% endif %}
+                    </div>
+                    <div class="message">
+                        "{{ statut_message.texte }}"
+                    </div>
+                </div>
+        </div>
+            {% for comment in commentaires %}
+        <div class="statut_2">
+
+            <div class="statut">
+                        <div class = "information">
+                    {% if comment.commentaire_parent.id == statut_message.id %}
+                            </br> <div style="font-weight: bold"> {{ comment.createur.username }} </div>
+                            </br> <div style="font-style: italic"> {{ comment.date|naturaltime }} </div>
+                    </div>
+                    <div class="message">
+                        "{{ comment.texte }}"
+                    </div>
+                    {% endif %}
+            </div>
+        </div>
+            {% endfor %}
+
+        <div class="input_comment">
+            <form method="post" action="">
+                {% csrf_token %}
+                    <label for="id_commentaire">ajout commentaire</label>
+                    <input type="text" name="texte" id="id_commentaire">
+                <input type='hidden' name="commentaire_parent" value={{ statut_message.pk }} />
+                <input class="btn btn-primary" type="submit" value="Envoyer" />
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

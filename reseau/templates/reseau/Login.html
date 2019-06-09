@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/html">
+<head>
+
+   <link rel="stylesheet" href="{% static '/assets/css/bootstrap.css' %}" >
+   <link rel="stylesheet" href="{% static '/assets/css/mdb.css' %}" >
+    <link rel="stylesheet" href="{% static 'reseau/css/style.css' %}" />
+   <title>{% block title %}Se connecter{% endblock %}</title>
+</head>
+
+<div class="container">
+    <h1>Se connecter</h1>
+
+{% if error %}
+<p><strong>Utilisateur inconnu ou mauvais de mot de passe.</strong></p>
+{% endif %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if user.is_authenticated %}
+Vous êtes connecté, {{ user.username }} !
+{% else %}
+<form method="post" action=".">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input class="btn btn-primary" type="submit" value="Se connecter" />
+</form>
+    <p>
+        <a class="btn btn-pink" href="{% url 'creation_utilisateur' %} ">Creer un Compte</a>
+    </p>
+{% endif %}
+
+</div>
+
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+</body>
+</html>
